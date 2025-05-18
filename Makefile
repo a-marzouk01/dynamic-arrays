@@ -1,11 +1,11 @@
 CC = clang
 CFLAGS = -Wall -Wextra -O2 
 
-TARGET = dynamic_arrays
+TARGET = main 
 
 all: $(TARGET)
 
-dynamic_arrays: main.c
+main: main.c
 	$(CC) $(CFLAGS) -o $(TARGET) main.c
 
 clean:

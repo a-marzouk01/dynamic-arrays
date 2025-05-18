@@ -23,7 +23,7 @@ void append(Dray *arr, int num) {
             exit(1);
         }
 
-        arr->last = new_start + (arr->last-arr->first);
+        arr->last = &(new_start[arr->size]);
         arr->first = new_start;
         arr->capacity = new_size;
     }
@@ -49,7 +49,7 @@ int pop(Dray *arr) {
             exit(1);
         }
 
-        arr->last = new_start + (arr->last-arr->first);
+        arr->last = &(new_start[arr->size]);
         arr->first = new_start;
         arr->capacity = new_size;
     }
@@ -74,49 +74,44 @@ Dray construct(unsigned int size) {
 
 int front(Dray *arr) {
     assert(arr->size >= 1);
-    return *(arr->first);
+    return arr->first[0];
 }
 
 int back(Dray *arr) {
     assert(arr->size >= 1);
-    return *(arr->last - 1);
+    return arr->first[arr->size-1];
 }
 
-int at(Dray *arr, int num) {
-    assert(arr->size >= 1);
-    assert(num < arr->size);
-    return *(arr->first+num);
-}
 
 int main(void) {
     // Example
     ////////////////////////////////////////////////////////////////////
     Dray arr = construct(1);
     append(&arr, 5);
-    printf("%d\n", *(arr.last-1));
+    printf("%d\n", back(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
     append(&arr, 7);
-    printf("%d\n", *(arr.last-1));
+    printf("%d\n", back(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
     append(&arr, 4);
-    printf("%d\n", *(arr.last-1));
+    printf("%d\n", back(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
     append(&arr, 7);
-    printf("%d\n", *(arr.last-1));
+    printf("%d\n", back(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
     append(&arr, 4);
-    printf("%d\n", *(arr.last-1));
+    printf("%d\n", back(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
     printf("%d\n", pop(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
     printf("%d\n", pop(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
 
-    for(int *it = arr.first; it != arr.last; it++) {
-        printf("%d\n", *it);
+    for (int i = 0; i < arr.size; i++) {
+        printf("%d\n", arr.first[i]);
     }
 
-    printf("element number 2: %d\n", at(&arr, 2));
+    printf("element number 2: %d\n", arr.first[2]);
 
     free(arr.first);
     ////////////////////////////////////////////////////////////////////
