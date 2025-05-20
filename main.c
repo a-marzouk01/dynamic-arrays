@@ -6,8 +6,7 @@ typedef struct {
     unsigned int capacity;
     unsigned int size;
 
-    int* first;
-    int* last;
+    int* items;
 } Dray;
 
 void append(Dray *arr, int num) { 
@@ -15,71 +14,68 @@ void append(Dray *arr, int num) {
 
     if (arr->size == arr->capacity) {
         int new_size = arr->capacity * 2;
-        int *new_start = realloc(arr->first, new_size * sizeof(int));
+		if (arr->capacity == 0) {
+			new_size = 256;
+		}
+        int *new_start = realloc(arr->items, new_size * sizeof(int));
 
         if (new_start == NULL) {
             perror("Failed to reallocate memory");
-            free(arr->first);
+            free(arr->items);
             exit(1);
         }
 
-        arr->last = &(new_start[arr->size]);
-        arr->first = new_start;
+        arr->items = new_start;
         arr->capacity = new_size;
     }
 
-    *(arr->last) = num;
-    arr->last++;
+	arr->items[arr->size] = num;
     arr->size++;
 }
 
 int pop(Dray *arr) { 
     assert(arr->capacity > 0);
-    assert(arr->last != arr->first);
     
-    arr->last--;
     arr->size--;
     if (arr->size < arr->capacity/2) {
         int new_size = arr->capacity / 2;
-        int *new_start = realloc(arr->first, new_size * sizeof(int));
+        int *new_start = realloc(arr->items, new_size * sizeof(int));
 
         if (new_start == NULL) {
             perror("Failed to reallocate memory");
-            free(arr->first);
+            free(arr->items);
             exit(1);
         }
 
-        arr->last = &(new_start[arr->size]);
-        arr->first = new_start;
+        arr->items = new_start;
         arr->capacity = new_size;
     }
-    return *arr->last;
+    return arr->items[arr->size-1];
 }
 
 Dray construct(unsigned int size) {
     Dray arr;
     arr.capacity = size;
     arr.size = 0;
-    arr.first = malloc(size * sizeof(int));
+    arr.items = malloc(size * sizeof(int));
 
-    if (arr.first == NULL) {
+    if (arr.items == NULL) {
         perror("Failed to allocate memory");
-        free(arr.first);
+        free(arr.items);
         exit(1);
     }
 
-    arr.last = arr.first;
     return arr;
 }
 
 int front(Dray *arr) {
     assert(arr->size >= 1);
-    return arr->first[0];
+    return arr->items[0];
 }
 
 int back(Dray *arr) {
     assert(arr->size >= 1);
-    return arr->first[arr->size-1];
+    return arr->items[arr->size-1];
 }
 
 
@@ -107,13 +103,13 @@ int main(void) {
     printf("%d\n", pop(&arr));
     printf("size: %d\ncapacity: %d\n", arr.size, arr.capacity);
 
-    for (int i = 0; i < arr.size; i++) {
-        printf("%d\n", arr.first[i]);
+    for (size_t i = 0; i < arr.size; i++) {
+        printf("%d\n", arr.items[i]);
     }
 
-    printf("element number 2: %d\n", arr.first[2]);
+    printf("element number 2: %d\n", arr.items[2]);
 
-    free(arr.first);
+    free(arr.items);
     ////////////////////////////////////////////////////////////////////
 
     return 0;
